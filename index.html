@@ -1083,9 +1083,9 @@ Clean, efficient code that’s built to last and easy to maintain.
       <div class="col-lg-10">
         <form id="contact-form" method="POST" class="contact-form bg-white">
           <!-- Hidden FormSubmit Options -->
-          <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_template" value="table">
+  <input type="text" name="_honey" style="display: none;">
 
           <!-- Honeypot for spam bots -->
           <input type="text" name="_honey" style="display: none;">
@@ -1104,10 +1104,10 @@ Clean, efficient code that’s built to last and easy to maintain.
           <div class="form-group">
             <textarea class="form-control" name="message" id="message" placeholder="Message"></textarea>
           </div>
-          <div class="form-btn text-center">
-            <button type="submit" class="button">Send Message</button>
-            <p id="form-message" class="text-danger mt-2"></p>
-          </div>
+  <div class="form-btn text-center">
+    <button type="submit" class="button">Send Message</button>
+    <p id="form-message" class="text-danger mt-2"></p>
+  </div>
         </form>
       </div>
     </div>
@@ -1150,12 +1150,13 @@ Clean, efficient code that’s built to last and easy to maintain.
 
     <script>
   // Set FormSubmit action dynamically to protect email from bots
-  document.getElementById('contact-form').action = "https://formsubmit.co/" + encodeURIComponent("savithan156@gmail.com");
+document.getElementById('contact-form').action = "https://formsubmit.co/" + encodeURIComponent("savithan156@gmail.com");
 
-  // Client-side validation
+  // Client-side validation and AJAX form submission
   document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent default form submit
+
     const name = document.getElementById('name').value.trim();
-   // alert(name);
     const email = document.getElementById('email').value.trim();
     const subject = document.getElementById('subject').value.trim();
     const message = document.getElementById('message').value.trim();
@@ -1163,20 +1164,47 @@ Clean, efficient code that’s built to last and easy to maintain.
 
     const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,}$/;
 
+    // Validation
     if (!name || !email || !subject || !message) {
       errorMsg.textContent = "All fields are required.";
-      e.preventDefault();
+      errorMsg.className = "text-danger mt-2";
       return;
     }
 
     if (!emailPattern.test(email)) {
       errorMsg.textContent = "Please enter a valid email address.";
-      e.preventDefault();
+      errorMsg.className = "text-danger mt-2";
       return;
     }
 
-    errorMsg.textContent = ""; // Clear error on valid submit
+    // Prepare form data
+    const form = document.getElementById('contact-form');
+    const formData = new FormData(form);
+
+    // Submit form with fetch
+    fetch(form.action, {
+      method: "POST",
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        errorMsg.textContent = "✅ Your message has been sent!";
+        errorMsg.className = "text-success mt-2";
+        form.reset(); // clear form
+      } else {
+        errorMsg.textContent = "❌ Something went wrong. Please try again.";
+        errorMsg.className = "text-danger mt-2";
+      }
+    })
+    .catch(() => {
+      errorMsg.textContent = "❌ Error sending message.";
+      errorMsg.className = "text-danger mt-2";
+    });
   });
+
 </script>
 
 

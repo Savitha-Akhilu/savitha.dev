@@ -305,10 +305,13 @@ button:focus {
     height: 100vh; /* or try 500px for smaller size */
     width: 100%;
     background-position: center;
-    background-size: cover;
+    background-size: contain;
     position: relative;
     z-index: 1;
-        background-repeat: no-repeat;
+
+        /* for server
+        background-size: cover;
+            background-repeat: no-repeat; */
 
 }
 
